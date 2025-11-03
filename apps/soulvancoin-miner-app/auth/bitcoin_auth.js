@@ -18,6 +18,7 @@ async function verifyBitcoinLogin(address, message, signature) {
         return { success: true, method: 'BIP-322' };
       }
     } catch (bip322Error) {
+      // Log for debugging purposes - in production, consider using a proper logging library
       console.log('BIP-322 verification failed, trying legacy format:', bip322Error.message);
     }
 

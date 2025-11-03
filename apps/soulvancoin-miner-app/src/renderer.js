@@ -105,11 +105,19 @@ document.getElementById('ton-connect-btn').addEventListener('click', async () =>
 });
 
 // Initialize TON Connect when page loads
-if (typeof TonConnectSDK !== 'undefined') {
-  initTonConnect();
-} else {
-  console.error('TonConnectSDK not loaded');
-}
+window.addEventListener('load', () => {
+  if (typeof TonConnectSDK !== 'undefined') {
+    initTonConnect();
+  } else {
+    console.error('TonConnectSDK not loaded. Please check your internet connection or reload the page.');
+    const statusDiv = document.getElementById('ton-status');
+    if (statusDiv) {
+      statusDiv.style.display = 'block';
+      statusDiv.className = 'status error';
+      statusDiv.textContent = 'Failed to load TON Connect SDK. Please check your internet connection and reload the page.';
+    }
+  }
+});
 
 // Bitcoin verification
 document.getElementById('btc-verify-btn').addEventListener('click', async () => {

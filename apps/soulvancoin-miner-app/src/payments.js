@@ -1,5 +1,6 @@
 /**
  * Build swap links for crypto exchanges
+ * Note: Aggregator URLs are standard endpoints and updated as needed
  * @param {Object} options - Swap options
  * @param {string} options.from - Source coin symbol (default: 'btc')
  * @param {string} options.to - Destination coin symbol (default: 'ton')
@@ -11,7 +12,7 @@
 function buildSwapLinks({ from = 'btc', to = 'ton', amount = '', toAddress, refundAddress = '' }) {
   const links = [];
 
-  // ChangeNOW widget URL
+  // ChangeNOW widget URL - Official widget endpoint
   const changeNowUrl = new URL('https://changenow.io/embeds/exchange-widget/v2/widget.html');
   changeNowUrl.searchParams.set('from', from.toLowerCase());
   changeNowUrl.searchParams.set('to', to.toLowerCase());
