@@ -8,7 +8,7 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           title: "chore: bump version to ${{ steps.version.outputs.version }}"
           body: |
             This PR updates the package.json version to match the tag ${{ github.ref_name }}.
-            
+
             This is an automated PR created after tagging a new release.
           branch: version-bump-${{ steps.version.outputs.version }}
           delete-branch: true
