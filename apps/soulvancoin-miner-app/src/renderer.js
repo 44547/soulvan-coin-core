@@ -15,7 +15,6 @@ document.querySelectorAll('.tab-button').forEach(button => {
 
 // Mining Tab Logic
 let miners = {};
-let selectedFilePath = null;
 
 // Load available miners on startup
 async function loadMiners() {
