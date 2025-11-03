@@ -21,7 +21,12 @@ A cryptocurrency miner application with integrated login and payment features.
 #### Payments Flow
 Exchange major cryptocurrencies to TON using integrated aggregator links:
 
-**Default TON Payout Address:** `UQCgJ8yDL7dToXb8JbB2FPxIqaXyA3xRNimb0Qy0CzpdSIMt`
+**Default TON Payout Address:** `EQATeIt1rlgdbc5OaHnz7hsxi9v2SGjT7ZmQMekaq17x5F7n`
+
+**Note on TON Address Formats:**
+- **EQ** (non-bounceable): Preferred by most exchanges and services. This is the default format.
+- **UQ** (bounceable): Alternative format that can be used if specifically required by a service.
+- Both formats represent the same wallet, just with different bounce flags.
 
 **Supported Coins:**
 - Bitcoin (BTC)
