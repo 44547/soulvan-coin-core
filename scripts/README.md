@@ -50,11 +50,17 @@ Examples:
 # Get version
 ./scripts/soulvan-cli.sh "soulvan.version" "{}"
 
-# Fee recommendation (example - requires implementation)
-./scripts/soulvan-cli.sh "fees.getrecommendation" '{"currency":"BTC"}' | jq .
+# Get music preferences
+./scripts/soulvan-cli.sh "soulvan.music.preferences" "{}" | jq .
 
-# Fee estimate (example - requires implementation)
-./scripts/soulvan-cli.sh "fees.estimate" '{"currency":"BTC","priority":"fast","size_vbytes":"220"}' | jq .
+# Generate a trap beat
+./scripts/soulvan-cli.sh "soulvan.music.beat" '{"genre":"trap","mood":"epic","tempo":140}' | jq .
+
+# Generate complete track with vocals
+./scripts/soulvan-cli.sh "soulvan.music.generate" '{"genre":"afrobeats","mood":"uplifting","tempo":128,"lyrics":"Ride the chain, feel the flame","vocal_style":"female pop","language":"en"}' | jq .
+
+# Synthesize vocals only
+./scripts/soulvan-cli.sh "soulvan.music.vocals" '{"lyrics":"Your lyrics here","style":"male rap","language":"en"}' | jq .
 ```
 
 Environment variables:

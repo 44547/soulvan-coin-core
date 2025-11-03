@@ -7,6 +7,7 @@ import threading
 import requests
 from pathlib import Path
 from typing import Any, Dict, List, Union
+from soulvan_music import SoulvanMusicEngine
 
 app = Flask(__name__)
 
@@ -284,6 +285,72 @@ def rpc_endpoint():
     if method.startswith("soulvan."):
         if method == "soulvan.version":
             return jsonify(jrpc_result("2.0.0", req_id))
+        
+        # Music AI methods
+        elif method == "soulvan.music.preferences":
+            try:
+                prefs = SoulvanMusicEngine.get_preferences()
+                return jsonify(jrpc_result(prefs, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.music.generate":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Invalid params", req_id)), 400
+                
+                track = SoulvanMusicEngine.create_music_track(
+                    genre=p.get('genre', 'trap'),
+                    mood=p.get('mood', 'epic'),
+                    tempo=p.get('tempo', 120),
+                    lyrics=p.get('lyrics'),
+                    vocal_style=p.get('vocal_style'),
+                    language=p.get('language', 'en')
+                )
+                return jsonify(jrpc_result(track, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.music.beat":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Invalid params", req_id)), 400
+                
+                beat = SoulvanMusicEngine.generate_beat(
+                    genre=p.get('genre', 'trap'),
+                    mood=p.get('mood', 'epic'),
+                    tempo=p.get('tempo', 120)
+                )
+                return jsonify(jrpc_result(beat, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.music.vocals":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Invalid params", req_id)), 400
+                
+                vocals = SoulvanMusicEngine.synthesize_vocals(
+                    lyrics=p.get('lyrics', ''),
+                    style=p.get('style', 'female pop'),
+                    language=p.get('language', 'en')
+                )
+                return jsonify(jrpc_result(vocals, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
         else:
             return jsonify(jrpc_error(-32601, f"Method not found: {method}", req_id)), 404
     

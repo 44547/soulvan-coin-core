@@ -124,7 +124,66 @@ The gateway will start on port 8080 (or the port specified in `GATEWAY_PORT`).
 
 - `POST /rpc` - JSON-RPC 2.0 endpoint (requires API key)
   - Supports standard Bitcoin Core RPC methods
-  - Supports custom `soulvan.*` methods (e.g., `soulvan.version`)
+  - Supports custom `soulvan.*` methods:
+    - `soulvan.version` - Get API version
+    - `soulvan.music.preferences` - Get supported music options
+    - `soulvan.music.generate` - Generate complete music track
+    - `soulvan.music.beat` - Generate beat only
+    - `soulvan.music.vocals` - Synthesize vocals only
+
+### Music AI Methods
+
+Custom RPC methods for AI-powered music generation:
+
+**`soulvan.music.preferences`**
+```json
+{"jsonrpc":"2.0","method":"soulvan.music.preferences","params":{},"id":1}
+```
+Returns supported genres, moods, languages, vocal styles, and tempo range.
+
+**`soulvan.music.generate`** - Generate complete track
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.music.generate",
+  "params":{
+    "genre":"trap",
+    "mood":"epic",
+    "tempo":120,
+    "lyrics":"Optional lyrics text",
+    "vocal_style":"female pop",
+    "language":"en"
+  },
+  "id":1
+}
+```
+
+**`soulvan.music.beat`** - Generate beat only
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.music.beat",
+  "params":{"genre":"afrobeats","mood":"uplifting","tempo":128},
+  "id":1
+}
+```
+
+**`soulvan.music.vocals`** - Synthesize vocals
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.music.vocals",
+  "params":{"lyrics":"Your lyrics here","style":"male rap","language":"en"},
+  "id":1
+}
+```
+
+Supported options:
+- **Genres**: trap, afrobeats, techno, orchestral, jazz, reggaeton, k-pop, drill
+- **Moods**: epic, dark, uplifting, romantic, mystical, chaotic
+- **Languages**: en, es, fr, ko, zh
+- **Vocal Styles**: female pop, male rap, robotic, whisper, opera
+- **Tempo**: 60-200 BPM
 
 ### Configuration (Legacy)
 
@@ -221,6 +280,24 @@ curl -s http://127.0.0.1:8080/rpc \
   -H 'Content-Type: application/json' \
   -H "X-API-Key: $SOULVAN_API_KEY" \
   -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.version"}' | jq
+
+# Get music preferences
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.music.preferences"}' | jq
+
+# Generate a trap beat
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.music.beat","params":{"genre":"trap","mood":"epic","tempo":140}}' | jq
+
+# Generate complete track with vocals
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.music.generate","params":{"genre":"afrobeats","mood":"uplifting","tempo":128,"lyrics":"Ride the chain, feel the flame","vocal_style":"female pop","language":"en"}}' | jq
 
 # Download distribution package
 curl -O http://127.0.0.1:8080/download/app
