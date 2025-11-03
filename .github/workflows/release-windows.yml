@@ -1,0 +1,51 @@
+name: Release Windows Installer
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: apps/soulvancoin-miner-app
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Read version from package.json
+        id: package-version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          echo "Package version: $version"
+      
+      - name: Build Windows installer
+        run: npm run dist
+      
+      - name: Create stable alias
+        shell: pwsh
+        run: |
+          $version = "${{ steps.package-version.outputs.VERSION }}"
+          Copy-Item "dist/Soulvan-Miner-Setup-$version.exe" "dist/Soulvan-Miner-Setup.exe"
+      
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            apps/soulvancoin-miner-app/dist/Soulvan-Miner-Setup-${{ steps.package-version.outputs.VERSION }}.exe
+            apps/soulvancoin-miner-app/dist/Soulvan-Miner-Setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
