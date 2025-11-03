@@ -1,0 +1,82 @@
+{
+  "miners": {
+    "xmrig": {
+      "name": "XMRig",
+      "description": "High performance RandomX, KawPow, CryptoNight and GhostRider CPU/GPU miner",
+      "executable": "xmrig",
+      "supportedAlgos": ["randomx", "kawpow", "cn/1", "cn/2", "cn-lite/1", "cn-heavy/0", "rx/0", "rx/wow", "rx/arq", "rx/sfx", "rx/keva"],
+      "commandTemplate": "{EXECUTABLE} -a {ALGO} -o {POOL} -u {WALLET} -p {WORKERNAME} -t {THREADS}",
+      "hashRatePatterns": [
+        "speed 10s/60s/15m ([\\d.]+) ([kMGT]?H/s)",
+        "miner\\s+speed\\s+10s/60s/15m\\s+([\\d.]+)\\s+([kMGT]?H/s)"
+      ]
+    },
+    "lolminer": {
+      "name": "lolMiner",
+      "description": "Multi-algorithm miner for AMD and Nvidia GPUs",
+      "executable": "lolMiner",
+      "supportedAlgos": ["ethash", "etchash", "autolykos2", "beam", "equihash144_5", "equihash192_7", "equihash125_4"],
+      "commandTemplate": "{EXECUTABLE} --algo {ALGO} --pool {POOL} --user {WALLET}.{WORKERNAME}",
+      "hashRatePatterns": [
+        "Total Speed:\\s+([\\d.]+)\\s+([kMGT]?H/s)",
+        "GPU\\s+\\d+:\\s+([\\d.]+)\\s+([kMGT]?H/s)"
+      ]
+    },
+    "srbminer": {
+      "name": "SRBMiner-MULTI",
+      "description": "CPU and AMD GPU miner",
+      "executable": "SRBMiner-MULTI",
+      "supportedAlgos": ["randomx", "cryptonight_gpu", "bl2bsha3", "ethash", "etchash", "ubqhash", "heavyhash"],
+      "commandTemplate": "{EXECUTABLE} --algorithm {ALGO} --pool {POOL} --wallet {WALLET} --worker {WORKERNAME} --cpu-threads {THREADS}",
+      "hashRatePatterns": [
+        "\\[HASHRATE\\]\\s+Avg:\\s+([\\d.]+)\\s+([kMGT]?H/s)",
+        "GPU\\d+\\s+([\\d.]+)\\s+([kMGT]?H/s)"
+      ]
+    },
+    "teamredminer": {
+      "name": "TeamRedMiner",
+      "description": "AMD GPU miner",
+      "executable": "teamredminer",
+      "supportedAlgos": ["ethash", "etchash", "kawpow", "verthash", "autolykos2", "ton", "alephium"],
+      "commandTemplate": "{EXECUTABLE} -a {ALGO} -o {POOL} -u {WALLET} -p {WORKERNAME}",
+      "hashRatePatterns": [
+        "Total:\\s+([\\d.]+)\\s+([kMGT]?H/s)",
+        "GPU\\s+\\d+\\s+([\\d.]+)\\s+([kMGT]?H/s)"
+      ]
+    },
+    "gminer": {
+      "name": "GMiner",
+      "description": "NVIDIA and AMD GPU miner",
+      "executable": "miner",
+      "supportedAlgos": ["ethash", "etchash", "kawpow", "beamhash", "equihash144_5", "equihash192_7", "equihash210_9"],
+      "commandTemplate": "{EXECUTABLE} --algo {ALGO} --server {POOL} --user {WALLET} --worker {WORKERNAME}",
+      "hashRatePatterns": [
+        "Total Speed:\\s+([\\d.]+)\\s+([kMGT]?H/s|Sol/s)",
+        "GPU\\d+\\s+([\\d.]+)\\s+([kMGT]?H/s|Sol/s)"
+      ]
+    },
+    "nbminer": {
+      "name": "NBMiner",
+      "description": "NVIDIA and AMD GPU miner",
+      "executable": "nbminer",
+      "supportedAlgos": ["ethash", "etchash", "kawpow", "beamv3", "ergo", "octopus", "conflux"],
+      "commandTemplate": "{EXECUTABLE} -a {ALGO} -o {POOL} -u {WALLET}.{WORKERNAME}",
+      "hashRatePatterns": [
+        "hashrate:\\s+([\\d.]+)\\s+([kMGT]?H/s)",
+        "GPU\\s+#\\d+:\\s+([\\d.]+)\\s+([kMGT]?H/s)"
+      ]
+    },
+    "trex": {
+      "name": "T-Rex",
+      "description": "NVIDIA GPU miner",
+      "executable": "t-rex",
+      "supportedAlgos": ["ethash", "etchash", "kawpow", "octopus", "autolykos2", "firopow", "mtp"],
+      "commandTemplate": "{EXECUTABLE} -a {ALGO} -o {POOL} -u {WALLET} -p {WORKERNAME} --api-bind-http 0.0.0.0:4067",
+      "hashRatePatterns": [
+        "hashrate\\s+([\\d.]+)\\s+([kMGT]?H/s)",
+        "Average speed.*?([\\d.]+)\\s+([kMGT]?H/s)",
+        "GPU\\s+#\\d+:\\s+([\\d.]+)\\s+([kMGT]?H/s)"
+      ]
+    }
+  }
+}

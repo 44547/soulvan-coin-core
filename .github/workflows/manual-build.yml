@@ -1,0 +1,82 @@
+name: Manual Build (Linux/macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build for'
+        required: true
+        type: choice
+        options:
+          - linux
+          - macos
+          - all
+
+jobs:
+  build-linux:
+    if: ${{ github.event.inputs.platform == 'linux' || github.event.inputs.platform == 'all' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/soulvancoin-miner-app
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: apps/soulvancoin-miner-app/package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Build Linux AppImage
+        run: npm run build:linux
+      
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: apps/soulvancoin-miner-app/dist/*.AppImage
+
+  build-macos:
+    if: ${{ github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'all' }}
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: apps/soulvancoin-miner-app
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: apps/soulvancoin-miner-app/package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Build macOS DMG
+        run: npm run build:mac
+        env:
+          APPLE_IDENTITY: ${{ secrets.APPLE_IDENTITY }}
+      
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: apps/soulvancoin-miner-app/dist/*.dmg
