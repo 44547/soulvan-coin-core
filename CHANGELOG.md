@@ -29,6 +29,12 @@ All notable changes to this project will be documented in this file.
   - Comprehensive `tools/mining/README.md` with examples
   - API endpoint documentation
   - Security guidelines
+- **Utility Scripts** (`scripts/`)
+  - `setup.sh` - Complete project setup with Gradle build
+  - `quickstart.sh` - Quick Python/Node.js environment setup
+  - `soulvan-cli.sh` - CLI wrapper for RPC calls
+  - `test-api.sh` - Comprehensive API testing
+  - `bootstrap_gradle_wrapper.sh` - Gradle wrapper bootstrapping
 
 ### Changed
 - Project metadata prepared for 2.0.0 release.

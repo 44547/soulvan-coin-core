@@ -18,6 +18,16 @@ See `CHANGELOG.md` for full details.
 
 ## Quick Start
 
+### Automated Setup
+
+```bash
+# Quick start (sets up Python/Node.js environment)
+./scripts/quickstart.sh
+
+# Or full setup (includes Gradle build)
+./scripts/setup.sh
+```
+
 ### Run with Docker
 
 ```bash
@@ -35,9 +45,30 @@ export SOULVAN_RPC_URL="http://127.0.0.1:8332"
 python soulvan_mining_api.py
 ```
 
-See [`tools/mining/README.md`](tools/mining/README.md) for detailed documentation.
+### Test the API
+
+```bash
+# Run comprehensive API tests
+./scripts/test-api.sh
+
+# Or use the CLI wrapper
+./scripts/soulvan-cli.sh "soulvan.version" "{}" | jq .
+```
+
+See [`tools/mining/README.md`](tools/mining/README.md) and [`scripts/README.md`](scripts/README.md) for detailed documentation.
 
 ## Components
+
+### Scripts (`scripts/`)
+
+Utility scripts for building, testing, and running Soulvan Coin:
+- **setup.sh** - Complete project setup with Gradle build
+- **quickstart.sh** - Quick Python/Node.js environment setup
+- **soulvan-cli.sh** - CLI wrapper for RPC calls
+- **test-api.sh** - Comprehensive API testing
+- **bootstrap_gradle_wrapper.sh** - Gradle wrapper setup
+
+See [`scripts/README.md`](scripts/README.md) for details.
 
 ### Mining Tools (`tools/mining/`)
 
