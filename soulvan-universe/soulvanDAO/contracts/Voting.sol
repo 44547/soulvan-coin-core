@@ -16,6 +16,7 @@ contract Voting {
     }
 
     function vote(uint proposalId) public {
+        require(proposalId < proposals.length, "Invalid proposal");
         require(!voted[msg.sender][proposalId], "Already voted");
         proposals[proposalId].voteCount++;
         voted[msg.sender][proposalId] = true;
