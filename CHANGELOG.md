@@ -28,7 +28,22 @@ All notable changes to this project will be documented in this file.
     - `soulvan.photo.generate` - Generate AI-powered avatars from photos
     - `soulvan.onboard` - Complete onboarding (wallet + avatar in one call)
     - Support for 6 avatar styles: cinematic, neon, cyberpunk, anime, realistic, artistic
-- **CLI Tools** (`tools/mining/soulvan-miner-cli.js`)
+  - **DAO Voting System** - Decentralized governance
+    - `soulvan.dao.proposal.create` - Create DAO proposals
+    - `soulvan.dao.vote` - Cast votes on proposals
+    - `soulvan.dao.proposals.list` - List proposals
+    - `soulvan.dao.results` - Get voting results
+    - `soulvan.dao.power` - Check voting power
+    - Support for avatar styles, music genres, truck styles, and feature proposals
+- **Enhanced CLI** (`tools/mining/cli/`)
+  - Complete NPM-based CLI with commander.js
+  - Wallet commands: create with photo, get info
+  - Music commands: generate tracks, get preferences
+  - DAO commands: propose, vote, list, results
+  - Direct RPC access for any method
+  - Colored output with chalk and ora spinners
+  - Global installation support (`soulvan-cli` or `soulvan`)
+- **Legacy CLI Tools** (`tools/mining/soulvan-miner-cli.js`)
   - Node.js command-line interface for miners
   - Commands for blockchain info, block queries, mining info, and templates
 - **Test Infrastructure**
@@ -40,6 +55,7 @@ All notable changes to this project will be documented in this file.
   - docker-compose.yml for easy deployment
 - **Documentation**
   - Comprehensive `tools/mining/README.md` with examples
+  - Enhanced `tools/mining/cli/README.md` with CLI documentation
   - API endpoint documentation
   - Security guidelines
 - **Utility Scripts** (`scripts/`)
@@ -51,6 +67,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Project metadata prepared for 2.0.0 release.
+- Gateway now includes complete DAO voting infrastructure
+- All features integrated into blockchain core via RPC methods
 
 ### Removed
 - N/A

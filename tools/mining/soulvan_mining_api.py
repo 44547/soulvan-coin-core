@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Union
 from soulvan_music import SoulvanMusicEngine
 from soulvan_wallet import SoulvanWalletEngine
 from soulvan_photo import SoulvanPhotoAI
+from soulvan_dao import create_proposal, cast_vote, get_proposal, list_proposals, get_proposal_results, close_proposal, get_voting_power
 
 app = Flask(__name__)
 
@@ -457,6 +458,104 @@ def rpc_endpoint():
                     "onboarding_complete": True
                 }
                 return jsonify(jrpc_result(result, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        # DAO methods
+        elif method == "soulvan.dao.proposal.create":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Invalid params", req_id)), 400
+                
+                proposal = create_proposal(
+                    category=p.get('category'),
+                    title=p.get('title'),
+                    description=p.get('description'),
+                    options=p.get('options', []),
+                    creator_wallet=p.get('creator_wallet', 'anonymous')
+                )
+                return jsonify(jrpc_result(proposal, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.dao.vote":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Invalid params", req_id)), 400
+                
+                vote_result = cast_vote(
+                    proposal_id=p.get('proposal_id'),
+                    option=p.get('option'),
+                    voter_wallet=p.get('voter_wallet', 'anonymous')
+                )
+                return jsonify(jrpc_result(vote_result, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.dao.proposal.get":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Missing proposal_id", req_id)), 400
+                
+                proposal = get_proposal(p.get('proposal_id'))
+                return jsonify(jrpc_result(proposal, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.dao.proposals.list":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    p = {}
+                
+                proposals = list_proposals(
+                    category=p.get('category'),
+                    status=p.get('status', 'active')
+                )
+                return jsonify(jrpc_result(proposals, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.dao.results":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Missing proposal_id", req_id)), 400
+                
+                results = get_proposal_results(p.get('proposal_id'))
+                return jsonify(jrpc_result(results, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.dao.power":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Missing wallet_address", req_id)), 400
+                
+                power = get_voting_power(p.get('wallet_address', 'anonymous'))
+                return jsonify(jrpc_result(power, req_id))
             except Exception as e:
                 return jsonify(jrpc_error(-32603, str(e), req_id)), 500
         
