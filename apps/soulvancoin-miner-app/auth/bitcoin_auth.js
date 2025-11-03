@@ -1,4 +1,4 @@
-const { Verifier } = require('bip322');
+const { Verifier } = require('bip322-js');
 const bitcoinMessage = require('bitcoinjs-message');
 
 /**

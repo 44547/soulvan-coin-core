@@ -16,12 +16,12 @@
   "license": "MIT",
   "dependencies": {
     "@tonconnect/sdk": "^3.0.0",
-    "bip322": "^1.0.0",
+    "bip322-js": "^3.0.0",
     "bitcoinjs-message": "^2.2.0",
     "qrcode": "^1.5.0"
   },
   "devDependencies": {
-    "electron": "^27.0.0",
+    "electron": "^39.0.0",
     "electron-builder": "^24.0.0"
   }
 }
