@@ -181,8 +181,14 @@ class ExternalMiner {
     // Cross-platform process termination
     if (process.platform === 'win32') {
       // Windows: use taskkill for graceful shutdown
+      // Validate PID is a positive integer
+      const pid = parseInt(this.process.pid, 10);
+      if (!pid || pid <= 0) {
+        throw new Error('Invalid process ID');
+      }
+      
       try {
-        require('child_process').execSync(`taskkill /pid ${this.process.pid} /T /F`, { timeout: 5000 });
+        require('child_process').execSync(`taskkill /pid ${pid} /T /F`, { timeout: 5000 });
       } catch (error) {
         // Fallback to kill
         this.process.kill('SIGTERM');

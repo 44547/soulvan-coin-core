@@ -3,6 +3,10 @@
  * In production, this would use TON SDK
  */
 
+// Constants
+const TON_ADDRESS_BASE64_LENGTH = 46;
+const TON_PRIVATE_KEY_LENGTH = 64;
+
 class TonWallet {
   constructor() {
     this.wallets = new Map();
@@ -11,8 +15,8 @@ class TonWallet {
 
   createWallet(name = 'default') {
     // Generate a mock TON address
-    const address = 'EQ' + this.generateRandomBase64(46);
-    const privateKey = this.generateRandomHex(64);
+    const address = 'EQ' + this.generateRandomBase64(TON_ADDRESS_BASE64_LENGTH);
+    const privateKey = this.generateRandomHex(TON_PRIVATE_KEY_LENGTH);
     
     const wallet = {
       name,
@@ -35,7 +39,7 @@ class TonWallet {
   restoreWallet(privateKey, name = 'restored') {
     // DEMO MODE: In production, this should derive the TON address from the privateKey
     // For now, we generate a new address and set some balance to simulate restoration
-    const address = 'EQ' + this.generateRandomBase64(46);
+    const address = 'EQ' + this.generateRandomBase64(TON_ADDRESS_BASE64_LENGTH);
     
     const wallet = {
       name,

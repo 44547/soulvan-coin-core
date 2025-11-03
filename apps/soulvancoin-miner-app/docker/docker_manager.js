@@ -4,15 +4,26 @@
 
 const { execSync } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
 class DockerManager {
   constructor() {
     this.imageName = 'soulvancoin-miner-app';
     this.dockerfilePath = path.join(__dirname, 'Dockerfile.example');
+    
+    // Validate dockerfile exists at initialization
+    if (!fs.existsSync(this.dockerfilePath)) {
+      console.warn(`Dockerfile not found at ${this.dockerfilePath}`);
+    }
   }
 
   build(tag = 'latest') {
     try {
+      // Validate dockerfile exists
+      if (!fs.existsSync(this.dockerfilePath)) {
+        throw new Error(`Dockerfile not found at ${this.dockerfilePath}`);
+      }
+      
       // Sanitize tag to prevent command injection
       const sanitizedTag = tag.replace(/[^a-zA-Z0-9._-]/g, '');
       if (!sanitizedTag) {

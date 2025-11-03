@@ -3,6 +3,10 @@
  * In production, this would connect to actual Soulvan Coin RPC
  */
 
+// Constants
+const SOULVAN_ADDRESS_LENGTH = 40;
+const SOULVAN_PRIVATE_KEY_LENGTH = 64;
+
 class SoulvanWallet {
   constructor() {
     this.wallets = new Map();
@@ -11,8 +15,8 @@ class SoulvanWallet {
 
   createWallet(name = 'default') {
     // Generate a mock wallet address
-    const address = 'soulvan_' + this.generateRandomHex(40);
-    const privateKey = this.generateRandomHex(64);
+    const address = 'soulvan_' + this.generateRandomHex(SOULVAN_ADDRESS_LENGTH);
+    const privateKey = this.generateRandomHex(SOULVAN_PRIVATE_KEY_LENGTH);
     
     const wallet = {
       name,
@@ -35,7 +39,7 @@ class SoulvanWallet {
   restoreWallet(privateKey, name = 'restored') {
     // DEMO MODE: In production, this should derive the address from the privateKey
     // For now, we generate a new address and set some balance to simulate restoration
-    const address = 'soulvan_' + this.generateRandomHex(40);
+    const address = 'soulvan_' + this.generateRandomHex(SOULVAN_ADDRESS_LENGTH);
     
     const wallet = {
       name,
