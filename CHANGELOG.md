@@ -21,6 +21,13 @@ All notable changes to this project will be documented in this file.
     - `soulvan.music.beat` - Generate beats (trap, afrobeats, techno, etc.)
     - `soulvan.music.vocals` - Synthesize vocals in multiple languages
     - Support for 8 genres, 6 moods, 5 languages, 5 vocal styles
+  - **Wallet & Identity integration** - Onboarding and photo AI
+    - `soulvan.wallet.create` - Create new wallets
+    - `soulvan.wallet.info` - Query wallet information
+    - `soulvan.photo.styles` - Get supported avatar styles
+    - `soulvan.photo.generate` - Generate AI-powered avatars from photos
+    - `soulvan.onboard` - Complete onboarding (wallet + avatar in one call)
+    - Support for 6 avatar styles: cinematic, neon, cyberpunk, anime, realistic, artistic
 - **CLI Tools** (`tools/mining/soulvan-miner-cli.js`)
   - Node.js command-line interface for miners
   - Commands for blockchain info, block queries, mining info, and templates

@@ -8,6 +8,8 @@ import requests
 from pathlib import Path
 from typing import Any, Dict, List, Union
 from soulvan_music import SoulvanMusicEngine
+from soulvan_wallet import SoulvanWalletEngine
+from soulvan_photo import SoulvanPhotoAI
 
 app = Flask(__name__)
 
@@ -348,6 +350,113 @@ def rpc_endpoint():
                     language=p.get('language', 'en')
                 )
                 return jsonify(jrpc_result(vocals, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        # Wallet methods
+        elif method == "soulvan.wallet.create":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    p = {}
+                
+                wallet = SoulvanWalletEngine.create_wallet(
+                    avatar_url=p.get('avatar_url'),
+                    username=p.get('username')
+                )
+                return jsonify(jrpc_result(wallet, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.wallet.info":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Missing wallet_address", req_id)), 400
+                
+                wallet_address = p.get('wallet_address')
+                if not wallet_address:
+                    return jsonify(jrpc_error(-32602, "Missing wallet_address", req_id)), 400
+                
+                info = SoulvanWalletEngine.get_wallet_info(wallet_address)
+                return jsonify(jrpc_result(info, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        # Photo AI methods
+        elif method == "soulvan.photo.styles":
+            try:
+                styles = SoulvanPhotoAI.get_supported_styles()
+                return jsonify(jrpc_result(styles, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        elif method == "soulvan.photo.generate":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    return jsonify(jrpc_error(-32602, "Invalid params", req_id)), 400
+                
+                # For RPC, accept base64 encoded image
+                image_base64 = p.get('image_base64')
+                if not image_base64:
+                    return jsonify(jrpc_error(-32602, "Missing image_base64", req_id)), 400
+                
+                import base64
+                image_data = base64.b64decode(image_base64)
+                
+                identity = SoulvanPhotoAI.generate_identity(
+                    image_data=image_data,
+                    style=p.get('style', 'cinematic'),
+                    username=p.get('username')
+                )
+                return jsonify(jrpc_result(identity, req_id))
+            except Exception as e:
+                return jsonify(jrpc_error(-32603, str(e), req_id)), 500
+        
+        # Combined wallet + photo onboarding
+        elif method == "soulvan.onboard":
+            try:
+                if isinstance(params, dict):
+                    p = params
+                elif isinstance(params, list) and len(params) > 0:
+                    p = params[0]
+                else:
+                    p = {}
+                
+                # Generate identity from photo if provided
+                avatar_url = None
+                if p.get('image_base64'):
+                    import base64
+                    image_data = base64.b64decode(p['image_base64'])
+                    identity = SoulvanPhotoAI.generate_identity(
+                        image_data=image_data,
+                        style=p.get('style', 'cinematic'),
+                        username=p.get('username')
+                    )
+                    avatar_url = identity['avatar_url']
+                
+                # Create wallet
+                wallet = SoulvanWalletEngine.create_wallet(
+                    avatar_url=avatar_url,
+                    username=p.get('username')
+                )
+                
+                result = {
+                    "wallet": wallet,
+                    "identity": identity if avatar_url else None,
+                    "onboarding_complete": True
+                }
+                return jsonify(jrpc_result(result, req_id))
             except Exception as e:
                 return jsonify(jrpc_error(-32603, str(e), req_id)), 500
         

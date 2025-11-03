@@ -126,10 +126,10 @@ The gateway will start on port 8080 (or the port specified in `GATEWAY_PORT`).
   - Supports standard Bitcoin Core RPC methods
   - Supports custom `soulvan.*` methods:
     - `soulvan.version` - Get API version
-    - `soulvan.music.preferences` - Get supported music options
-    - `soulvan.music.generate` - Generate complete music track
-    - `soulvan.music.beat` - Generate beat only
-    - `soulvan.music.vocals` - Synthesize vocals only
+    - **Music AI**: `soulvan.music.preferences`, `soulvan.music.generate`, `soulvan.music.beat`, `soulvan.music.vocals`
+    - **Wallet**: `soulvan.wallet.create`, `soulvan.wallet.info`
+    - **Photo AI**: `soulvan.photo.styles`, `soulvan.photo.generate`
+    - **Onboarding**: `soulvan.onboard` - Complete wallet creation with avatar
 
 ### Music AI Methods
 
@@ -177,6 +177,74 @@ Returns supported genres, moods, languages, vocal styles, and tempo range.
   "id":1
 }
 ```
+
+### Wallet & Identity Methods
+
+Custom RPC methods for wallet creation and identity management:
+
+**`soulvan.wallet.create`** - Create new wallet
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.wallet.create",
+  "params":{
+    "username":"myusername",
+    "avatar_url":"/avatars/my_avatar.png"
+  },
+  "id":1
+}
+```
+
+**`soulvan.wallet.info`** - Get wallet information
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.wallet.info",
+  "params":{"wallet_address":"0xabc123..."},
+  "id":1
+}
+```
+
+**`soulvan.photo.styles`** - Get supported avatar styles
+```json
+{"jsonrpc":"2.0","method":"soulvan.photo.styles","params":{},"id":1}
+```
+
+**`soulvan.photo.generate`** - Generate avatar from photo
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.photo.generate",
+  "params":{
+    "image_base64":"<base64 encoded image>",
+    "style":"cinematic",
+    "username":"myusername"
+  },
+  "id":1
+}
+```
+
+**`soulvan.onboard`** - Complete onboarding (wallet + avatar)
+```json
+{
+  "jsonrpc":"2.0",
+  "method":"soulvan.onboard",
+  "params":{
+    "image_base64":"<base64 encoded image>",
+    "style":"cinematic",
+    "username":"myusername"
+  },
+  "id":1
+}
+```
+
+Supported avatar styles:
+- **cinematic** - Movie-quality dramatic lighting
+- **neon** - Vibrant neon glow effects
+- **cyberpunk** - Futuristic cyberpunk aesthetic
+- **anime** - Anime/manga style transformation
+- **realistic** - Enhanced realistic portrait
+- **artistic** - Artistic painting style
 
 Supported options:
 - **Genres**: trap, afrobeats, techno, orchestral, jazz, reggaeton, k-pop, drill
@@ -298,6 +366,25 @@ curl -s http://127.0.0.1:8080/rpc \
   -H 'Content-Type: application/json' \
   -H "X-API-Key: $SOULVAN_API_KEY" \
   -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.music.generate","params":{"genre":"afrobeats","mood":"uplifting","tempo":128,"lyrics":"Ride the chain, feel the flame","vocal_style":"female pop","language":"en"}}' | jq
+
+# Create a wallet
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.wallet.create","params":{"username":"johndoe"}}' | jq
+
+# Get supported photo styles
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.photo.styles"}' | jq
+
+# Complete onboarding with photo
+IMAGE_BASE64=$(base64 -w0 < photo.jpg)
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"soulvan.onboard\",\"params\":{\"image_base64\":\"$IMAGE_BASE64\",\"style\":\"cinematic\",\"username\":\"johndoe\"}}" | jq
 
 # Download distribution package
 curl -O http://127.0.0.1:8080/download/app

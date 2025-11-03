@@ -61,6 +61,19 @@ Examples:
 
 # Synthesize vocals only
 ./scripts/soulvan-cli.sh "soulvan.music.vocals" '{"lyrics":"Your lyrics here","style":"male rap","language":"en"}' | jq .
+
+# Create a wallet
+./scripts/soulvan-cli.sh "soulvan.wallet.create" '{"username":"johndoe"}' | jq .
+
+# Get wallet info
+./scripts/soulvan-cli.sh "soulvan.wallet.info" '{"wallet_address":"0xabc123..."}' | jq .
+
+# Get supported photo styles
+./scripts/soulvan-cli.sh "soulvan.photo.styles" "{}" | jq .
+
+# Complete onboarding (requires base64 encoded image)
+IMAGE_BASE64=$(base64 -w0 < photo.jpg)
+./scripts/soulvan-cli.sh "soulvan.onboard" "{\"image_base64\":\"$IMAGE_BASE64\",\"style\":\"cinematic\",\"username\":\"johndoe\"}" | jq .
 ```
 
 Environment variables:
