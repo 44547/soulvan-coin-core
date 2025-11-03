@@ -4,7 +4,7 @@ services:
   gateway:
     build: .
     ports:
-      - "5050:5050"
+      - "8080:8080"
     environment:
       - SOULVAN_RPC_URL=${SOULVAN_RPC_URL:-http://host.docker.internal:8332}
       - SOULVAN_RPC_USER=${SOULVAN_RPC_USER:-bitcoinrpc}
@@ -12,7 +12,7 @@ services:
       - SOULVAN_TON_ADDRESS=${SOULVAN_TON_ADDRESS:-}
       - SOULVAN_FEE_ADDRESS=${SOULVAN_FEE_ADDRESS:-}
       - SOULVAN_API_KEY=${SOULVAN_API_KEY:-}
-      - GATEWAY_PORT=5050
+      - GATEWAY_PORT=8080
       - STATS_POLL_INTERVAL=${STATS_POLL_INTERVAL:-5}
       - ALLOW_MUTATING_BLOCKCHAIN_RPC=${ALLOW_MUTATING_BLOCKCHAIN_RPC:-false}
     restart: unless-stopped

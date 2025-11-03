@@ -12,6 +12,8 @@ Flask-based HTTP gateway providing RESTful access to Soulvan node RPC with minin
 - Blockchain endpoints (`/blockchain/info`, `/blockchain/besthash`)
 - Block query by height (`/block/byheight/<height>`)
 - Mining endpoints (`/mining/info`, `/mining/template`, `/mining/submit`)
+- Simple RPC endpoint (`/rpc`) with support for custom `soulvan.*` methods
+- Root-level convenience endpoints (`/health`, `/config`)
 - Real-time stats streaming via Server-Sent Events
 - TON wallet address configuration
 - API key authentication support
@@ -22,9 +24,12 @@ Flask-based HTTP gateway providing RESTful access to Soulvan node RPC with minin
 Node.js command-line interface for interacting with the mining gateway.
 
 **Commands:**
-- `info` - Get mining information
+- `health` - Health check
+- `mining info` - Get mining information
+- `blockchain info` - Get blockchain information
 - `block info <height>` - Get block details at specific height
 - `template` - Get block template for mining
+- `rpc2 <method>` - Call RPC methods (e.g., `rpc2 soulvan.version`)
 
 ## Installation
 
@@ -46,7 +51,14 @@ npm install
 
 ## Configuration
 
-Set environment variables before running:
+Use the provided `.env.example` as a template:
+
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+Or set environment variables before running:
 
 ```bash
 export SOULVAN_RPC_URL="http://127.0.0.1:8332"
@@ -54,8 +66,8 @@ export SOULVAN_RPC_USER="bitcoinrpc"
 export SOULVAN_RPC_PASS="yourpass"
 export SOULVAN_TON_ADDRESS="UQCgJ8yDL7dToXb8JbB2FPxIqaXyA3xRNimb0Qy0CzpdSIMt"
 export SOULVAN_FEE_ADDRESS="UQCgJ8yDL7dToXb8JbB2FPxIqaXyA3xRNimb0Qy0CzpdSIMt"
-export SOULVAN_API_KEY="your-secret-key"  # Optional
-export GATEWAY_PORT=5050
+export SOULVAN_API_KEY="your-secret-key"
+export GATEWAY_PORT=8080
 ```
 
 ## Running the Gateway
@@ -64,22 +76,37 @@ export GATEWAY_PORT=5050
 python soulvan_mining_api.py
 ```
 
-The gateway will start on port 5050 (or the port specified in `GATEWAY_PORT`).
+The gateway will start on port 8080 (or the port specified in `GATEWAY_PORT`).
 
 ## Using the CLI
 
 ```bash
+# Health check
+./soulvan-miner-cli.js health
+
 # Get mining info
-node soulvan-miner-cli.js info
+./soulvan-miner-cli.js mining info
+
+# Get blockchain info
+./soulvan-miner-cli.js blockchain info
 
 # Get block info at specific height
-node soulvan-miner-cli.js block info 800000
+./soulvan-miner-cli.js block info 800000
 
 # Get block template
-node soulvan-miner-cli.js template
+./soulvan-miner-cli.js template
+
+# Call custom RPC method
+./soulvan-miner-cli.js rpc2 soulvan.version
 ```
 
 ## API Endpoints
+
+### Root Level (Convenience)
+
+- `GET /health` - Health check
+- `GET /config` - Get current configuration
+- `PUT /config` - Update configuration (requires API key)
 
 ### Blockchain
 
@@ -93,17 +120,23 @@ node soulvan-miner-cli.js template
 - `GET /mining/template` - Get block template (requires API key)
 - `POST /mining/submit` - Submit mined block (requires API key)
 
-### Configuration
+### RPC
+
+- `POST /rpc` - JSON-RPC 2.0 endpoint (requires API key)
+  - Supports standard Bitcoin Core RPC methods
+  - Supports custom `soulvan.*` methods (e.g., `soulvan.version`)
+
+### Configuration (Legacy)
 
 - `GET /api/config` - Get current configuration
-- `POST /api/config` - Update configuration (requires API key)
+- `POST|PUT /api/config` - Update configuration (requires API key)
 
 ### Stats
 
 - `GET /api/stats` - Get current stats snapshot
 - `GET /api/stats/stream` - Server-sent events stream of stats
 
-### Health
+### Health (Legacy)
 
 - `GET /api/health` - Health check
 
@@ -112,9 +145,11 @@ node soulvan-miner-cli.js template
 Run the test suite:
 
 ```bash
-pytest -q
+# From repository root
+PYTHONPATH=. pytest -q tools/mining/tests
+
 # or with coverage
-pytest --cov=soulvan_mining_api test_api.py
+pytest --cov=soulvan_mining_api tools/mining/tests
 ```
 
 ## Docker
@@ -141,27 +176,45 @@ docker compose down
 ## Example Usage
 
 ```bash
+# Health check
+curl -s http://127.0.0.1:8080/health | jq
+
+# Get configuration
+curl -s http://127.0.0.1:8080/config | jq
+
+# Update configuration (with API key)
+curl -sX PUT http://127.0.0.1:8080/config \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"tonAddress":"EQxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","feeAddress":"EQyyyy..."}' | jq
+
 # Get blockchain info
-curl -s http://127.0.0.1:5050/blockchain/info | jq
+curl -s http://127.0.0.1:8080/blockchain/info | jq
 
 # Get best block hash
-curl -s http://127.0.0.1:5050/blockchain/besthash | jq
+curl -s http://127.0.0.1:8080/blockchain/besthash | jq
 
 # Get block at height 800000 with full verbosity
-curl -s "http://127.0.0.1:5050/block/byheight/800000?verbosity=2" | jq
+curl -s "http://127.0.0.1:8080/block/byheight/800000?verbosity=2" | jq
 
 # Get mining info
-curl -s http://127.0.0.1:5050/mining/info | jq
+curl -s http://127.0.0.1:8080/mining/info | jq
 
 # Get block template (with API key)
-curl -s http://127.0.0.1:5050/mining/template \
+curl -s http://127.0.0.1:8080/mining/template \
   -H "X-API-Key: your-secret-key" | jq
 
 # Submit block (with API key)
-curl -s -X POST http://127.0.0.1:5050/mining/submit \
+curl -s -X POST http://127.0.0.1:8080/mining/submit \
   -H "Content-Type: application/json" \
   -H "X-API-Key: your-secret-key" \
   -d '{"block":"020000000001..."}' | jq
+
+# Call custom RPC method
+curl -s http://127.0.0.1:8080/rpc \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $SOULVAN_API_KEY" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.version"}' | jq
 ```
 
 ## License

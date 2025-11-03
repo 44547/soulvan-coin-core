@@ -14,7 +14,7 @@ app = Flask(__name__)
 RPC_URL = os.getenv("SOULVAN_RPC_URL", "http://127.0.0.1:8332")
 RPC_USER = os.getenv("SOULVAN_RPC_USER", "bitcoinrpc")
 RPC_PASS = os.getenv("SOULVAN_RPC_PASS", "rpcpass")
-GATEWAY_PORT = int(os.getenv("GATEWAY_PORT", "5050"))
+GATEWAY_PORT = int(os.getenv("GATEWAY_PORT", "8080"))
 POLL_INTERVAL = int(os.getenv("STATS_POLL_INTERVAL", "5"))
 DASHBOARD_DIR = Path(os.getenv("DASHBOARD_DIR", str(Path(__file__).resolve().parent / "dashboard")))
 CONFIG_PATH = Path(__file__).parent / "config.json"
@@ -105,7 +105,7 @@ def get_config():
     cfg = load_config()
     return jsonify(cfg)
 
-@app.route("/api/config", methods=["POST"])
+@app.route("/api/config", methods=["POST", "PUT"])
 def update_config():
     if not require_apikey():
         return jsonify({"error": "Unauthorized"}), 401
@@ -237,6 +237,67 @@ def mining_submit():
         return jsonify(result), 500
     
     return jsonify(jrpc_result(result.get("result"), 0))
+
+# Root-level endpoints for convenience
+@app.route("/health", methods=["GET"])
+def health_root():
+    return jsonify({"status": "ok", "version": "2.0.0"})
+
+@app.route("/config", methods=["GET"])
+def get_config_root():
+    cfg = load_config()
+    return jsonify(cfg)
+
+@app.route("/config", methods=["PUT", "POST"])
+def update_config_root():
+    if not require_apikey():
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    data = request.get_json()
+    cfg = load_config()
+    
+    if "tonAddress" in data:
+        if not is_valid_ton_address(data["tonAddress"]):
+            return jsonify({"error": "Invalid TON address"}), 400
+        cfg["tonAddress"] = data["tonAddress"]
+    
+    if "feeAddress" in data:
+        if not is_valid_ton_address(data["feeAddress"]):
+            return jsonify({"error": "Invalid fee address"}), 400
+        cfg["feeAddress"] = data["feeAddress"]
+    
+    save_config(cfg)
+    return jsonify(cfg)
+
+# Simpler RPC endpoint
+@app.route("/rpc", methods=["POST"])
+def rpc_endpoint():
+    if not require_apikey():
+        return jsonify(jrpc_error(-1, "Unauthorized")), 401
+    
+    data = request.get_json()
+    method = data.get("method", "")
+    params = data.get("params", [])
+    req_id = data.get("id", 0)
+    
+    # Handle custom soulvan.* methods
+    if method.startswith("soulvan."):
+        if method == "soulvan.version":
+            return jsonify(jrpc_result("2.0.0", req_id))
+        else:
+            return jsonify(jrpc_error(-32601, f"Method not found: {method}", req_id)), 404
+    
+    # Block mutating methods unless explicitly allowed
+    if not ALLOW_MUTATING_BLOCKCHAIN_RPC:
+        mutating_methods = ["sendrawtransaction", "generate", "generatetoaddress", "invalidateblock", "submitblock"]
+        if method in mutating_methods:
+            return jsonify(jrpc_error(-1, "Mutating blockchain RPC methods are disabled", req_id)), 403
+    
+    result = rpc(method, params)
+    if "error" in result:
+        return jsonify(jrpc_error(result["error"].get("code", -32603), result["error"].get("message", "RPC error"), req_id)), 500
+    
+    return jsonify(jrpc_result(result.get("result"), req_id))
 
 @app.route("/api/health", methods=["GET"])
 def health():

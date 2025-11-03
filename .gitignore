@@ -39,3 +39,4 @@ package-lock.json
 
 # Config files
 tools/mining/config.json
+.env
