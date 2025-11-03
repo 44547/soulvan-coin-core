@@ -13,7 +13,13 @@ class DockerManager {
 
   build(tag = 'latest') {
     try {
-      const command = `docker build -f "${this.dockerfilePath}" -t ${this.imageName}:${tag} ..`;
+      // Sanitize tag to prevent command injection
+      const sanitizedTag = tag.replace(/[^a-zA-Z0-9._-]/g, '');
+      if (!sanitizedTag) {
+        throw new Error('Invalid tag name');
+      }
+      
+      const command = `docker build -f "${this.dockerfilePath}" -t ${this.imageName}:${sanitizedTag} ..`;
       const output = execSync(command, { 
         encoding: 'utf8',
         cwd: __dirname
@@ -21,7 +27,7 @@ class DockerManager {
       
       return {
         success: true,
-        message: `Image built successfully: ${this.imageName}:${tag}`,
+        message: `Image built successfully: ${this.imageName}:${sanitizedTag}`,
         output: output.trim()
       };
     } catch (error) {
@@ -35,7 +41,13 @@ class DockerManager {
 
   run(command = 'npm run tests', tag = 'latest') {
     try {
-      const dockerCommand = `docker run --rm ${this.imageName}:${tag} ${command}`;
+      // Sanitize tag to prevent command injection
+      const sanitizedTag = tag.replace(/[^a-zA-Z0-9._-]/g, '');
+      if (!sanitizedTag) {
+        throw new Error('Invalid tag name');
+      }
+      
+      const dockerCommand = `docker run --rm ${this.imageName}:${sanitizedTag} ${command}`;
       const output = execSync(dockerCommand, { 
         encoding: 'utf8'
       });
@@ -70,10 +82,16 @@ class DockerManager {
 
   remove(tag = 'latest') {
     try {
-      const output = execSync(`docker rmi ${this.imageName}:${tag}`, { encoding: 'utf8' });
+      // Sanitize tag to prevent command injection
+      const sanitizedTag = tag.replace(/[^a-zA-Z0-9._-]/g, '');
+      if (!sanitizedTag) {
+        throw new Error('Invalid tag name');
+      }
+      
+      const output = execSync(`docker rmi ${this.imageName}:${sanitizedTag}`, { encoding: 'utf8' });
       return {
         success: true,
-        message: `Image removed: ${this.imageName}:${tag}`,
+        message: `Image removed: ${this.imageName}:${sanitizedTag}`,
         output: output.trim()
       };
     } catch (error) {

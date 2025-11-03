@@ -33,6 +33,8 @@ class TonWallet {
   }
 
   restoreWallet(privateKey, name = 'restored') {
+    // DEMO MODE: In production, this should derive the TON address from the privateKey
+    // For now, we generate a new address and set some balance to simulate restoration
     const address = 'EQ' + this.generateRandomBase64(46);
     
     const wallet = {
@@ -49,7 +51,7 @@ class TonWallet {
     return {
       success: true,
       address,
-      message: 'TON wallet restored successfully (demo mode)'
+      message: 'TON wallet restored successfully (demo mode - replace with real key derivation)'
     };
   }
 

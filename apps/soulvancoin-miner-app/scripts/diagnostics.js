@@ -77,6 +77,8 @@ class Diagnostics {
   getWindowsGPUInfo() {
     try {
       // Try NVIDIA first
+      // Note: execSync with shell execution - validated for diagnostics only
+      // In production, consider sanitizing paths and limiting commands
       const nvidiaOutput = execSync('nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader', { encoding: 'utf8', timeout: 5000 });
       const lines = nvidiaOutput.trim().split('\n');
       const gpus = lines.map(line => {

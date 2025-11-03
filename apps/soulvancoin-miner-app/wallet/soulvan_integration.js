@@ -33,7 +33,8 @@ class SoulvanWallet {
   }
 
   restoreWallet(privateKey, name = 'restored') {
-    // In demo mode, just create a new wallet
+    // DEMO MODE: In production, this should derive the address from the privateKey
+    // For now, we generate a new address and set some balance to simulate restoration
     const address = 'soulvan_' + this.generateRandomHex(40);
     
     const wallet = {
@@ -50,7 +51,7 @@ class SoulvanWallet {
     return {
       success: true,
       address,
-      message: 'Wallet restored successfully (demo mode)'
+      message: 'Wallet restored successfully (demo mode - replace with real key derivation)'
     };
   }
 

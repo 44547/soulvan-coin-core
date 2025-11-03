@@ -36,7 +36,8 @@ let benchmark = new Benchmark();
 let dockerManager = new DockerManager();
 
 // Track first wallet creation for cinematic onboarding
-let isFirstWalletCreation = true;
+let isFirstSoulvanWalletCreation = true;
+let isFirstTonWalletCreation = true;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -155,9 +156,9 @@ ipcMain.handle('mining:loadPresets', async () => {
 ipcMain.handle('wallet:createSoulvan', async (event, name) => {
   try {
     const result = soulvanWallet.createWallet(name);
-    result.isFirstTime = isFirstWalletCreation;
-    if (isFirstWalletCreation) {
-      isFirstWalletCreation = false;
+    result.isFirstTime = isFirstSoulvanWalletCreation;
+    if (isFirstSoulvanWalletCreation) {
+      isFirstSoulvanWalletCreation = false;
     }
     return result;
   } catch (error) {
@@ -168,9 +169,9 @@ ipcMain.handle('wallet:createSoulvan', async (event, name) => {
 ipcMain.handle('wallet:createTon', async (event, name) => {
   try {
     const result = tonWallet.createWallet(name);
-    result.isFirstTime = isFirstWalletCreation;
-    if (isFirstWalletCreation) {
-      isFirstWalletCreation = false;
+    result.isFirstTime = isFirstTonWalletCreation;
+    if (isFirstTonWalletCreation) {
+      isFirstTonWalletCreation = false;
     }
     return result;
   } catch (error) {

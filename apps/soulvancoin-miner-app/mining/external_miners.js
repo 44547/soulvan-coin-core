@@ -178,7 +178,20 @@ class ExternalMiner {
       throw new Error('External miner is not running');
     }
 
-    this.process.kill('SIGTERM');
+    // Cross-platform process termination
+    if (process.platform === 'win32') {
+      // Windows: use taskkill for graceful shutdown
+      try {
+        require('child_process').execSync(`taskkill /pid ${this.process.pid} /T /F`, { timeout: 5000 });
+      } catch (error) {
+        // Fallback to kill
+        this.process.kill('SIGTERM');
+      }
+    } else {
+      // Unix-like systems
+      this.process.kill('SIGTERM');
+    }
+    
     this.running = false;
     
     return { success: true, message: 'Miner stopped' };
