@@ -131,9 +131,15 @@ class ExternalMiner extends EventEmitter {
     const { executable, args } = this.buildCommand();
     
     try {
-      this.process = spawn(executable, args, {
-        shell: true,
-        cwd: path.dirname(this.options.executablePath || executable)
+      // Validate executable path to prevent command injection
+      const execPath = this.options.executablePath || executable;
+      if (!execPath || typeof execPath !== 'string') {
+        throw new Error('Invalid executable path');
+      }
+      
+      this.process = spawn(execPath, args.slice(1), {
+        shell: false,
+        cwd: path.dirname(execPath)
       });
 
       this.isRunning = true;

@@ -71,7 +71,7 @@
       "description": "NVIDIA GPU miner",
       "executable": "t-rex",
       "supportedAlgos": ["ethash", "etchash", "kawpow", "octopus", "autolykos2", "firopow", "mtp"],
-      "commandTemplate": "{EXECUTABLE} -a {ALGO} -o {POOL} -u {WALLET} -p {WORKERNAME} --api-bind-http 0.0.0.0:4067",
+      "commandTemplate": "{EXECUTABLE} -a {ALGO} -o {POOL} -u {WALLET} -p {WORKERNAME} --api-bind-http 127.0.0.1:4067",
       "hashRatePatterns": [
         "hashrate\\s+([\\d.]+)\\s+([kMGT]?H/s)",
         "Average speed.*?([\\d.]+)\\s+([kMGT]?H/s)",
