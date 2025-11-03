@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
   - TON address configuration management with validation
   - API key authentication for sensitive operations
   - Security controls for mutating blockchain operations
+  - Download endpoint (`/download/app`) for distribution packages
 - **CLI Tools** (`tools/mining/soulvan-miner-cli.js`)
   - Node.js command-line interface for miners
   - Commands for blockchain info, block queries, mining info, and templates

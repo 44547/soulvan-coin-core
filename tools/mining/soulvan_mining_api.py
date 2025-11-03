@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response, send_from_directory, stream_with_context
+from flask import Flask, request, jsonify, Response, send_from_directory, send_file, stream_with_context
 import os
 import re
 import json
@@ -302,6 +302,31 @@ def rpc_endpoint():
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "version": "2.0.0"})
+
+# Download endpoint
+@app.route("/download/app", methods=["GET"])
+def download_app():
+    """
+    Download the packaged distribution zip file.
+    Looks for build/distributions/soulvan-coin-core.zip in the repository root.
+    """
+    # Get repository root (3 levels up from this file: tools/mining/soulvan_mining_api.py)
+    repo_root = Path(__file__).resolve().parents[2]
+    zip_path = repo_root / "build" / "distributions" / "soulvan-coin-core.zip"
+    
+    if not zip_path.exists():
+        return jsonify({
+            "error": "artifact_not_found",
+            "hint": "Run './gradlew distZip' to generate build/distributions/soulvan-coin-core.zip",
+            "expected_path": str(zip_path)
+        }), 404
+    
+    return send_file(
+        zip_path,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name='soulvan-coin-core.zip'
+    )
 
 # ---- Main ----
 if __name__ == "__main__":

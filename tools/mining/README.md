@@ -140,6 +140,12 @@ The gateway will start on port 8080 (or the port specified in `GATEWAY_PORT`).
 
 - `GET /api/health` - Health check
 
+### Download
+
+- `GET /download/app` - Download the packaged distribution zip file
+  - Returns `soulvan-coin-core.zip` from `build/distributions/`
+  - Returns 404 with hint if file doesn't exist (run `./gradlew distZip` to generate)
+
 ## Testing
 
 Run the test suite:
@@ -215,6 +221,11 @@ curl -s http://127.0.0.1:8080/rpc \
   -H 'Content-Type: application/json' \
   -H "X-API-Key: $SOULVAN_API_KEY" \
   -d '{"jsonrpc":"2.0","id":1,"method":"soulvan.version"}' | jq
+
+# Download distribution package
+curl -O http://127.0.0.1:8080/download/app
+# Or check if artifact exists
+curl -s http://127.0.0.1:8080/download/app | jq
 ```
 
 ## License
