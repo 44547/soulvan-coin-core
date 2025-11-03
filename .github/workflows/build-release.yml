@@ -9,6 +9,9 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    permissions:
+      contents: write
+      actions: read
     defaults:
       run:
         working-directory: apps/soulvancoin-miner-app
@@ -58,6 +61,8 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: apps/soulvancoin-miner-app

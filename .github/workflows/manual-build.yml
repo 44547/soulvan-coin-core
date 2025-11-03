@@ -16,6 +16,9 @@ jobs:
   build-linux:
     if: ${{ github.event.inputs.platform == 'linux' || github.event.inputs.platform == 'all' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     defaults:
       run:
         working-directory: apps/soulvancoin-miner-app
@@ -49,6 +52,9 @@ jobs:
   build-macos:
     if: ${{ github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'all' }}
     runs-on: macos-latest
+    permissions:
+      contents: read
+      actions: read
     defaults:
       run:
         working-directory: apps/soulvancoin-miner-app
