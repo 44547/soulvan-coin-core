@@ -224,6 +224,7 @@ apps/soulvancoin-miner-app/
 3. **Path Security**: Validate executable paths before running external miners
 4. **Network**: External miners connect to mining pools - ensure you trust the pool
 5. **Production**: Replace demo wallet implementations with real RPC/SDK integrations before production use
+6. **Electron Version**: This app uses Electron 27.x. For production deployment, consider upgrading to the latest Electron version to address known vulnerabilities (run `npm audit` for details)
 
 ## Next Steps
 
