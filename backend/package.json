@@ -1,0 +1,26 @@
+{
+  "name": "soulvan-backend",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "test": "hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.11",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.0.0",
+    "chai": "^4.3.10",
+    "ethers": "^6.13.0",
+    "hardhat": "^2.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3",
+    "typechain": "^8.3.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.19.2",
+    "ipfs-http-client": "^60.0.0"
+  }
+}

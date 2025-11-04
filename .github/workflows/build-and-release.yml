@@ -1,0 +1,80 @@
+name: Build and Release Soulvan Core
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., v2.0.0). If omitted, uses ref name."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version != '' && inputs.version || github.ref_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read Unity version from ProjectSettings
+        id: unity_version
+        run: |
+          ver=$(grep 'm_EditorVersion:' unity/ProjectSettings/ProjectVersion.txt | sed 's/.*: //')
+          echo "version=$ver" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: |
+            unity/Library
+            unity/Logs
+          key: Library-${{ runner.os }}-${{ steps.unity_version.outputs.version }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Build (Windows x86_64)
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          projectPath: unity
+          unityVersion: ${{ steps.unity_version.outputs.version }}
+          targetPlatform: StandaloneWindows64
+          buildName: SoulvanCore
+          buildsPath: build
+          versioning: Custom
+          version: ${{ env.VERSION }}
+
+      - name: Package Windows build
+        run: |
+          cd build
+          zip -r SoulvanCore_Windows_x86_64.zip StandaloneWindows64 || (echo "Build folder not found" && ls -la && exit 1)
+          ls -lh SoulvanCore_Windows_x86_64.zip
+
+      - name: Upload artifact (CI preview)
+        uses: actions/upload-artifact@v4
+        with:
+          name: SoulvanCore_Windows_x86_64-${{ env.VERSION }}
+          path: build/SoulvanCore_Windows_x86_64.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') || inputs.version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: Soulvan Core ${{ env.VERSION }}
+          body: |
+            Automated release for Soulvan Core build ${{ env.VERSION }}.
+          draft: false
+          prerelease: ${{ contains(env.VERSION, 'rc') || contains(env.VERSION, 'beta') || contains(env.VERSION, 'alpha') }}
+          files: |
+            build/SoulvanCore_Windows_x86_64.zip
