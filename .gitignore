@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Unity build artifacts
+unity/Library/
+unity/Logs/
+unity/Temp/
+unity/obj/
+unity/Build/
+unity/Builds/
