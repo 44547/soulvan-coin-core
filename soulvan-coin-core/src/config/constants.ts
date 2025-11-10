@@ -1,0 +1,9 @@
+export const NETWORK_NAME = "SoulvanCoin";
+export const BLOCK_TIME = 10 * 60; // 10 minutes in seconds
+export const DIFFICULTY_ADJUSTMENT_INTERVAL = 2016; // Adjust difficulty every 2016 blocks
+export const MINING_REWARD = 50; // Initial mining reward
+export const MAX_BLOCK_SIZE = 1e6; // 1 MB
+export const TARGET_BLOCK_TIME = 600; // 10 minutes in seconds
+export const MAX_TRANSACTIONS_PER_BLOCK = 1000; // Maximum transactions per block
+export const GENESIS_BLOCK_PREVIOUS_HASH = "0".repeat(64); // Hash of the previous block for the genesis block
+export const GENESIS_BLOCK_TIMESTAMP = 1672531199; // Timestamp for the genesis block (example: Jan 1, 2023)
