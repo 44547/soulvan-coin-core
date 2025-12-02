@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "soulvancoin"
 include(":app")
+include(":core-model")
+include(":cli")
  
