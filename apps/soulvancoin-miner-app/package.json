@@ -1,0 +1,54 @@
+{
+  "name": "soulvan-miner",
+  "version": "0.4.0",
+  "description": "Soulvan Coin Miner - Electron Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis",
+    "dist:linux": "electron-builder --linux deb AppImage",
+    "dist:mac": "electron-builder --mac dmg"
+  },
+  "keywords": [
+    "soulvan",
+    "cryptocurrency",
+    "miner",
+    "electron"
+  ],
+  "author": "Soulvan Coin Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.soulvan.miner",
+    "productName": "Soulvan Miner",
+    "files": [
+      "**/*",
+      "build/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "artifactName": "Soulvan-Miner-Setup-${version}.exe"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "artifactName": "Soulvan-Miner-${version}-${arch}.${ext}",
+      "category": "Utility"
+    },
+    "mac": {
+      "target": "dmg",
+      "artifactName": "Soulvan-Miner-${version}.dmg",
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "publish": [
+      "github"
+    ]
+  }
+}

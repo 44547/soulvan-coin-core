@@ -1,0 +1,95 @@
+name: Release Cross-Platform (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g., 0.4.1). Leave empty to use current package.json version.'
+        required: false
+        type: string
+      build_linux:
+        description: 'Build Linux (.deb, .AppImage)'
+        required: true
+        type: boolean
+        default: true
+      build_macos:
+        description: 'Build macOS (.dmg)'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  build-linux:
+    if: inputs.build_linux
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/soulvancoin-miner-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Align package.json version (optional)
+        if: inputs.version != ''
+        run: |
+          npm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Build Linux packages
+        run: npm run dist:linux
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-packages
+          path: |
+            apps/soulvancoin-miner-app/dist/*.deb
+            apps/soulvancoin-miner-app/dist/*.AppImage
+
+  build-macos:
+    if: inputs.build_macos
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: apps/soulvancoin-miner-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Align package.json version (optional)
+        if: inputs.version != ''
+        run: |
+          npm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Build macOS package
+        run: npm run dist:mac
+        env:
+          # Uncomment and set these secrets in your repository for code signing and notarization:
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # CSC_LINK: ${{ secrets.CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-package
+          path: apps/soulvancoin-miner-app/dist/*.dmg
