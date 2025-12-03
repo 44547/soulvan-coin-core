@@ -1,0 +1,49 @@
+name: Version Sync
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  sync-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Extract version from tag
+        id: extract_version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/v}
+          echo "version=$TAG_NAME" >> $GITHUB_OUTPUT
+      
+      - name: Update package.json version
+        working-directory: apps/soulvancoin-miner-app
+        run: |
+          npm version ${{ steps.extract_version.outputs.version }} --no-git-tag-version
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: sync package.json version to ${{ steps.extract_version.outputs.version }}'
+          title: 'Sync version to ${{ steps.extract_version.outputs.version }}'
+          body: |
+            This PR synchronizes the package.json version to match the git tag.
+            
+            Version: ${{ steps.extract_version.outputs.version }}
+            Tag: ${{ github.ref }}
+          branch: version-sync-${{ steps.extract_version.outputs.version }}
+          delete-branch: true

@@ -1,0 +1,13 @@
+This directory should contain application icons:
+
+- icon.png (512x512) - For Linux AppImage
+- icon.ico - For Windows installer
+- icon.icns - For macOS DMG
+
+These files are not included in the repository.
+You can generate them from a PNG source using tools like:
+- electron-icon-builder
+- png2icons
+- Online icon converters
+
+The app will still work without these files, but the installers will use default icons.
