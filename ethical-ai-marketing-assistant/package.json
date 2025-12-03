@@ -1,0 +1,28 @@
+{
+  "name": "ethical-ai-marketing-assistant",
+  "version": "1.0.0",
+  "description": "A marketing assistant powered by ethical AI, focusing on content generation and campaign management.",
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "typescript": "^4.5.4",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.7"
+  },
+  "keywords": [
+    "AI",
+    "marketing",
+    "ethical",
+    "content generation",
+    "campaign management"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

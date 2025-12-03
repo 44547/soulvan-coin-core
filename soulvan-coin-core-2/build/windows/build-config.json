@@ -1,0 +1,18 @@
+{
+  "outputDirectory": "dist/windows",
+  "buildScripts": {
+    "preBuild": "npm run clean",
+    "build": "tsc",
+    "postBuild": "npm run package"
+  },
+  "dependencies": {
+    "node": ">=14.0.0",
+    "typescript": "^4.0.0"
+  },
+  "platformSpecific": {
+    "windows": {
+      "installer": "electron-builder",
+      "icon": "assets/icon.ico"
+    }
+  }
+}
