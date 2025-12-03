@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulvan Coin Miner & TON Desktop App</title>
+  <link rel="stylesheet" href="styles/themes.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--surface-color);
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .navbar h1 {
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+
+    .theme-button {
+      padding: 8px 16px;
+      background-color: var(--primary-color);
+      color: var(--bg-color);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      background-color: var(--surface-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 10px;
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-button.active {
+      border-bottom-color: var(--primary-color);
+      color: var(--primary-color);
+      background: none;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    .card {
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.8;
+      transform: translateY(-2px);
+    }
+
+    button.primary {
+      font-weight: bold;
+    }
+
+    button.secondary {
+      font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .stat-box {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--primary-color);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .log-container {
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      padding: 15px;
+      border-radius: 4px;
+      height: 300px;
+      overflow-y: auto;
+      font-size: 12px;
+      border: 1px solid var(--primary-color);
+    }
+
+    .log-line {
+      margin-bottom: 5px;
+      word-wrap: break-word;
+    }
+
+    .log-line.error {
+      color: #f00;
+    }
+
+    .proposal-item {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .proposal-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .proposal-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .vote-bar {
+      background-color: rgba(0, 0, 0, 0.5);
+      height: 30px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 5px 0;
+    }
+
+    .vote-bar-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      transition: width 0.3s;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: 12px;
+    }
+
+    .info-box {
+      background-color: rgba(0, 150, 255, 0.1);
+      border: 1px solid rgba(0, 150, 255, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .success-box {
+      background-color: rgba(0, 255, 0, 0.1);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: var(--accent-color);
+    }
+
+    .error-box {
+      background-color: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #ff6b6b;
+    }
+
+    pre {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="theme-neo">
+  <div class="app-container">
+    <!-- Navbar -->
+    <div class="navbar">
+      <h1>⛏️ Soulvan Coin Miner & TON Desktop App</h1>
+      <button class="theme-button" id="themeButton">Theme</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-button active" data-tab="mining">Mining</button>
+      <button class="tab-button" data-tab="wallet">Wallet</button>
+      <button class="tab-button" data-tab="music-ai">SoulvanMusic AI</button>
+      <button class="tab-button" data-tab="photo-ai">PhotoAI Avatars</button>
+      <button class="tab-button" data-tab="dao">DAO Governance</button>
+      <button class="tab-button" data-tab="utils">Utility Scripts</button>
+      <button class="tab-button" data-tab="tests">Tests</button>
+      <button class="tab-button" data-tab="docker">Docker</button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Mining Tab -->
+      <div id="mining" class="tab-content active">
+        <div class="card">
+          <h2>Mining Control</h2>
+          
+          <!-- Mining Engine Selector -->
+          <div class="form-group">
+            <label>Mining Engine:</label>
+            <select id="miningEngine">
+              <option value="demo">Built-in Demo Miner</option>
+              <option value="external">External Miner (XMRig, etc.)</option>
+            </select>
+          </div>
+
+          <!-- Demo Miner Controls -->
+          <div id="demoControls">
+            <div class="form-group">
+              <label>Threads:</label>
+              <input type="number" id="demoThreads" value="4" min="1" max="64">
+            </div>
+            <button class="primary" id="startDemoBtn">Start Demo Miner</button>
+            <button class="secondary" id="stopDemoBtn" disabled>Stop Demo Miner</button>
+          </div>
+
+          <!-- External Miner Controls -->
+          <div id="externalControls" style="display: none;">
+            <div class="form-group">
+              <label>Preset:</label>
+              <select id="minerPreset">
+                <option value="">Select a preset...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Executable Path:</label>
+              <input type="text" id="externalExe" placeholder="C:\path\to\xmrig.exe">
+            </div>
+            <div class="form-group">
+              <label>Pool URL (host:port):</label>
+              <input type="text" id="externalPool" placeholder="pool.minexmr.com:4444">
+            </div>
+            <div class="form-group">
+              <label>Wallet/Username:</label>
+              <input type="text" id="externalUsername" placeholder="Your wallet address">
+            </div>
+            <div class="form-group">
+              <label>Password:</label>
+              <input type="text" id="externalPassword" value="x">
+            </div>
+            <div class="form-group">
+              <label>Threads:</label>
+              <input type="number" id="externalThreads" value="4" min="1" max="64">
+            </div>
+            <div class="form-group">
+              <label>Extra Arguments:</label>
+              <input type="text" id="externalArgs" placeholder="--donate-level 1">
+            </div>
+            <button class="primary" id="startExternalBtn">Start External Miner</button>
+            <button class="secondary" id="stopExternalBtn" disabled>Stop External Miner</button>
+          </div>
+        </div>
+
+        <!-- Mining Stats -->
+        <div class="card">
+          <h2>Mining Statistics</h2>
+          <div class="stats-grid" id="miningStats">
+            <div class="stat-box">
+              <div class="stat-label">Status</div>
+              <div class="stat-value" id="statStatus">Stopped</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Hashrate</div>
+              <div class="stat-value" id="statHashrate">0 H/s</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Accepted Shares</div>
+              <div class="stat-value" id="statAccepted">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Rejected Shares</div>
+              <div class="stat-value" id="statRejected">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Uptime</div>
+              <div class="stat-value" id="statUptime">00:00:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Miner Logs (for external miner) -->
+        <div class="card" id="logCard" style="display: none;">
+          <h2>Miner Logs</h2>
+          <div class="log-container" id="minerLogs"></div>
+        </div>
+      </div>
+
+      <!-- Wallet Tab -->
+      <div id="wallet" class="tab-content">
+        <div class="two-column">
+          <div class="card">
+            <h2>Soulvan Coin Wallet</h2>
+            <button class="primary" id="createSoulvanWallet">Create New Wallet</button>
+            <button class="secondary" id="getSoulvanBalance">Get Balance</button>
+            <div id="soulvanWalletInfo" style="margin-top: 15px;"></div>
+            
+            <h3 style="margin-top: 20px; color: var(--secondary-color);">Send Transaction</h3>
+            <div class="form-group">
+              <label>To Address:</label>
+              <input type="text" id="soulvanToAddress">
+            </div>
+            <div class="form-group">
+              <label>Amount:</label>
+              <input type="number" id="soulvanAmount" step="0.01">
+            </div>
+            <button class="primary" id="sendSoulvan">Send</button>
+            <div id="soulvanTxResult" style="margin-top: 15px;"></div>
+          </div>
+
+          <div class="card">
+            <h2>TON Wallet</h2>
+            <button class="primary" id="createTonWallet">Create New Wallet</button>
+            <button class="secondary" id="getTonBalance">Get Balance</button>
+            <div id="tonWalletInfo" style="margin-top: 15px;"></div>
+            
+            <h3 style="margin-top: 20px; color: var(--secondary-color);">Send Transaction</h3>
+            <div class="form-group">
+              <label>To Address:</label>
+              <input type="text" id="tonToAddress">
+            </div>
+            <div class="form-group">
+              <label>Amount:</label>
+              <input type="number" id="tonAmount" step="0.01">
+            </div>
+            <button class="primary" id="sendTon">Send</button>
+            <div id="tonTxResult" style="margin-top: 15px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SoulvanMusic AI Tab -->
+      <div id="music-ai" class="tab-content">
+        <div class="card">
+          <h2>SoulvanMusic AI - Audio Generation</h2>
+          <div class="info-box">
+            Generate audio based on text prompts. Keywords like "low", "high", "bass", "treble" affect frequency.
+          </div>
+          
+          <div class="form-group">
+            <label>Prompt:</label>
+            <input type="text" id="musicPrompt" placeholder="e.g., 'low bass tone' or 'high treble sound'">
+          </div>
+          <div class="form-group">
+            <label>Duration (seconds):</label>
+            <input type="number" id="musicDuration" value="3" min="1" max="30">
+          </div>
+          <button class="primary" id="generateMusic">Generate Audio</button>
+          
+          <div id="musicResult" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+
+      <!-- PhotoAI Avatars Tab -->
+      <div id="photo-ai" class="tab-content">
+        <div class="card">
+          <h2>PhotoAI Avatar Generation</h2>
+          <div class="info-box">
+            AI avatar generation (stub implementation - returns metadata only)
+          </div>
+          
+          <div class="form-group">
+            <label>Prompt:</label>
+            <textarea id="avatarPrompt" rows="3" placeholder="Describe the avatar you want to generate..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Style:</label>
+            <select id="avatarStyle">
+              <option value="default">Default</option>
+            </select>
+          </div>
+          <button class="primary" id="generateAvatar">Generate Avatar</button>
+          
+          <div id="avatarResult" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+
+      <!-- DAO Governance Tab -->
+      <div id="dao" class="tab-content">
+        <div class="card">
+          <h2>Create Proposal</h2>
+          <div class="form-group">
+            <label>Title:</label>
+            <input type="text" id="proposalTitle">
+          </div>
+          <div class="form-group">
+            <label>Description:</label>
+            <textarea id="proposalDescription" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Options (comma-separated):</label>
+            <input type="text" id="proposalOptions" value="Yes,No">
+          </div>
+          <button class="primary" id="createProposal">Create Proposal</button>
+        </div>
+
+        <div class="card">
+          <h2>Active Proposals</h2>
+          <button class="secondary" id="refreshProposals">Refresh</button>
+          <div id="proposalsList" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+
+      <!-- Utility Scripts Tab -->
+      <div id="utils" class="tab-content">
+        <div class="card">
+          <h2>System Diagnostics</h2>
+          <button class="primary" id="runDiagnostics">Run Diagnostics</button>
+          <div id="diagnosticsResult" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="card">
+          <h2>Hashing Benchmark</h2>
+          <div class="form-group">
+            <label>Iterations:</label>
+            <input type="number" id="benchmarkIterations" value="1000000" min="100000" step="100000">
+          </div>
+          <button class="primary" id="runBenchmark">Run Benchmark</button>
+          <div id="benchmarkResult" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+
+      <!-- Tests Tab -->
+      <div id="tests" class="tab-content">
+        <div class="card">
+          <h2>Miner Tests</h2>
+          <div class="info-box">
+            Run automated tests for the built-in demo miner. Tests will start the miner, verify stats, and stop cleanly.
+          </div>
+          <button class="primary" id="runTests">Run Tests</button>
+          <div id="testResults" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+
+      <!-- Docker Tab -->
+      <div id="docker" class="tab-content">
+        <div class="card">
+          <h2>Docker Manager</h2>
+          <div id="dockerStatus" style="margin-bottom: 20px;"></div>
+          
+          <h3 style="color: var(--secondary-color); margin-bottom: 10px;">Build Image</h3>
+          <div class="form-group">
+            <label>Tag:</label>
+            <input type="text" id="dockerTag" value="latest">
+          </div>
+          <button class="primary" id="dockerBuild">Build Image</button>
+          
+          <h3 style="color: var(--secondary-color); margin: 20px 0 10px 0;">Run Container</h3>
+          <div class="form-group">
+            <label>Command:</label>
+            <select id="dockerCommand">
+              <option value="npm run tests">npm run tests</option>
+              <option value="npm run diagnostics">npm run diagnostics</option>
+              <option value="npm run benchmark">npm run benchmark</option>
+            </select>
+          </div>
+          <button class="primary" id="dockerRun">Run Container</button>
+          
+          <button class="secondary" id="dockerListImages" style="margin-top: 20px;">List Images</button>
+          
+          <div id="dockerOutput" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+  <script src="cinematic.js"></script>
+</body>
+</html>

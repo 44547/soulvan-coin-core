@@ -1,0 +1,171 @@
+/**
+ * Theme system with animated transitions
+ * Supports: neo, aurora, noir, sunset
+ */
+
+/* Base transitions */
+body {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body.theme-transitioning {
+  transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Neo Theme (Default - Cyan/Magenta) */
+body.theme-neo {
+  --primary-color: #00ffff;
+  --secondary-color: #ff00ff;
+  --accent-color: #00ff00;
+  --bg-color: #0a0e27;
+  --surface-color: #1a1f3a;
+  --text-color: #e0e0e0;
+  --border-color: #00ffff;
+}
+
+/* Aurora Theme (Purple/Blue) */
+body.theme-aurora {
+  --primary-color: #a855f7;
+  --secondary-color: #3b82f6;
+  --accent-color: #06b6d4;
+  --bg-color: #1e1b4b;
+  --surface-color: #312e81;
+  --text-color: #f3f4f6;
+  --border-color: #a855f7;
+}
+
+/* Noir Theme (Black/White/Gold) */
+body.theme-noir {
+  --primary-color: #ffd700;
+  --secondary-color: #c0c0c0;
+  --accent-color: #ffffff;
+  --bg-color: #0f0f0f;
+  --surface-color: #1a1a1a;
+  --text-color: #f5f5f5;
+  --border-color: #ffd700;
+}
+
+/* Sunset Theme (Orange/Red/Pink) */
+body.theme-sunset {
+  --primary-color: #f97316;
+  --secondary-color: #ec4899;
+  --accent-color: #fbbf24;
+  --bg-color: #1c1917;
+  --surface-color: #292524;
+  --text-color: #fef3c7;
+  --border-color: #f97316;
+}
+
+/* Apply theme colors */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tab-button.active,
+button.primary {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border-color: var(--primary-color);
+}
+
+button.secondary {
+  background-color: var(--secondary-color);
+  color: var(--bg-color);
+  border-color: var(--secondary-color);
+}
+
+.card, .section {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+}
+
+input, select, textarea {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+/* Cinematic overlay styles */
+.cinematic-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.cinematic-overlay.active {
+  opacity: 1;
+}
+
+#starfield-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cinematic-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: #00ffff;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  min-width: 500px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}

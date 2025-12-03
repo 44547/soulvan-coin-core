@@ -1,0 +1,31 @@
+# Dockerfile for Soulvan Coin Miner App (CI/Dev usage)
+# This example Dockerfile is for running tests, benchmarks, and diagnostics
+# in a containerized environment without GUI
+
+FROM node:18-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    python3 \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy application files
+COPY . .
+
+# Default command: run tests
+CMD ["npm", "run", "tests"]
+
+# Alternative commands:
+# docker run <image> npm run diagnostics
+# docker run <image> npm run benchmark

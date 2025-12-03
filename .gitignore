@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Node.js / Electron app
+node_modules/
+apps/soulvancoin-miner-app/node_modules/
+*.log
+npm-debug.log*
