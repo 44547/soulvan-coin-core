@@ -1,0 +1,22 @@
+{
+  "name": "soulvancoin-miner-app",
+  "version": "0.4.1",
+  "description": "Soulvan Coin Miner Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.soulvancoin.miner",
+    "productName": "Soulvan Miner",
+    "win": {
+      "target": "nsis",
+      "artifactName": "Soulvan-Miner-Setup-${version}.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  }
+}
