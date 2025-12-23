@@ -1,0 +1,30 @@
+{
+  "name": "soulvan-coin-core",
+  "version": "1.0.0",
+  "description": "Soulvan Coin: A Scalable, Secure, and Decentralized Future for Digital Currency",
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "decentralization",
+    "peer-to-peer",
+    "digital currency"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.5.0",
+    "jest": "^27.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.0",
+    "ts-jest": "^27.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
