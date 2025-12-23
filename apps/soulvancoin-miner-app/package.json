@@ -1,0 +1,27 @@
+{
+  "name": "soulvancoin-miner-app",
+  "version": "1.0.0",
+  "description": "Soulvan Coin & TON Mining Desktop Application with AI and DAO features",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "tests": "node tests/miner_tests.js",
+    "diagnostics": "node scripts/diagnostics.js",
+    "benchmark": "node scripts/benchmark.js"
+  },
+  "keywords": [
+    "soulvan",
+    "mining",
+    "electron",
+    "cryptocurrency",
+    "TON",
+    "AI"
+  ],
+  "author": "Soulvan Team",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^27.0.0"
+  },
+  "devDependencies": {}
+}
