@@ -1,0 +1,27 @@
+{
+  "name": "soulvancoin-miner-app",
+  "version": "1.0.0",
+  "description": "Soulvan Coin Miner with TON and Bitcoin login",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "miner",
+    "electron"
+  ],
+  "author": "Soulvan Team",
+  "license": "MIT",
+  "dependencies": {
+    "@tonconnect/sdk": "^3.0.0",
+    "bip322-js": "^3.0.0",
+    "bitcoinjs-message": "^2.2.0",
+    "qrcode": "^1.5.0"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
