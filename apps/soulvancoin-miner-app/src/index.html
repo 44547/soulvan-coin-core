@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulvan Miner</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header img {
+      height: 50px;
+      width: auto;
+    }
+
+    .header h1 {
+      color: #667eea;
+      font-size: 2em;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-button {
+      background: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      transition: all 0.3s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-button:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .tab-button.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .links-list {
+      list-style: none;
+      margin-top: 15px;
+    }
+
+    .links-list li {
+      margin-bottom: 10px;
+    }
+
+    .links-list a {
+      display: block;
+      padding: 12px 20px;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .links-list a:hover {
+      background: #5568d3;
+      transform: translateX(5px);
+    }
+
+    .connected-address {
+      background: #d4edda;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      word-break: break-all;
+    }
+
+    .default-ton-address {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="assets/title.png" alt="Soulvan Logo" id="logo">
+      <h1>Soulvan Miner</h1>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-button active" data-tab="account">Account</button>
+      <button class="tab-button" data-tab="payments">Payments</button>
+    </div>
+
+    <div id="account" class="tab-content active">
+      <div class="section">
+        <h2>Login with TON</h2>
+        <button id="ton-connect-btn">Connect TON Wallet</button>
+        <div id="ton-status" class="status info" style="display: none;"></div>
+        <div id="ton-address" class="connected-address" style="display: none;"></div>
+      </div>
+
+      <div class="section">
+        <h2>Login with Bitcoin</h2>
+        <div class="form-group">
+          <label for="btc-address">Bitcoin Address</label>
+          <input type="text" id="btc-address" placeholder="Enter your Bitcoin address">
+        </div>
+        <div class="form-group">
+          <label for="btc-message">Message to Sign</label>
+          <input type="text" id="btc-message" placeholder="Enter message (default: 'Login to Soulvan Miner')" value="Login to Soulvan Miner">
+        </div>
+        <div class="form-group">
+          <label for="btc-signature">Signature</label>
+          <textarea id="btc-signature" placeholder="Paste signature here"></textarea>
+        </div>
+        <button id="btc-verify-btn">Verify Signature</button>
+        <div id="btc-status" style="display: none;"></div>
+      </div>
+    </div>
+
+    <div id="payments" class="tab-content">
+      <div class="section">
+        <h2>Exchange Coins to TON</h2>
+        <p class="default-ton-address">
+          <strong>Default TON Payout Address:</strong><br>
+          EQATeIt1rlgdbc5OaHnz7hsxi9v2SGjT7ZmQMekaq17x5F7n
+        </p>
+        
+        <div class="form-group">
+          <label for="from-coin">From Coin</label>
+          <select id="from-coin">
+            <option value="btc">Bitcoin (BTC)</option>
+            <option value="eth">Ethereum (ETH)</option>
+            <option value="usdt">Tether (USDT)</option>
+            <option value="usdc">USD Coin (USDC)</option>
+            <option value="trx">Tron (TRX)</option>
+            <option value="bnb">Binance Coin (BNB)</option>
+            <option value="matic">Polygon (MATIC)</option>
+            <option value="ltc">Litecoin (LTC)</option>
+            <option value="doge">Dogecoin (DOGE)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount (Optional)</label>
+          <input type="number" id="amount" step="0.00000001" placeholder="Enter amount (optional)">
+        </div>
+
+        <div class="form-group">
+          <label for="to-address">TON Payout Address</label>
+          <input type="text" id="to-address" value="EQATeIt1rlgdbc5OaHnz7hsxi9v2SGjT7ZmQMekaq17x5F7n" placeholder="TON address">
+        </div>
+
+        <div class="form-group">
+          <label for="refund-address">Refund Address (Optional)</label>
+          <input type="text" id="refund-address" placeholder="Your refund address (optional)">
+        </div>
+
+        <button id="generate-links-btn">Generate Exchange Links</button>
+
+        <div id="swap-links" style="display: none;">
+          <h3 style="margin-top: 20px; margin-bottom: 10px;">Exchange Links:</h3>
+          <ul class="links-list" id="links-container"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
